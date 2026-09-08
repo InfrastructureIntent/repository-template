@@ -1,0 +1,88 @@
+name: Package
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Validate packages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Discover solution and projects
+        id: repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          solution_count=$(find . -maxdepth 1 -type f -name '*.sln' | wc -l | tr -d ' ')
+          if [ "$solution_count" -ne 1 ]; then
+            echo "Expected exactly one root .sln file; found $solution_count."
+            exit 1
+          fi
+
+          solution=$(find . -maxdepth 1 -type f -name '*.sln' -print -quit)
+          echo "solution=$solution" >> "$GITHUB_OUTPUT"
+
+          if find src -type f -name '*.csproj' -print -quit 2>/dev/null | grep -q .; then
+            echo "has_projects=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_projects=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore
+        if: steps.repo.outputs.has_projects == 'true'
+        run: dotnet restore "${{ steps.repo.outputs.solution }}"
+
+      - name: Build
+        if: steps.repo.outputs.has_projects == 'true'
+        run: dotnet build "${{ steps.repo.outputs.solution }}" --configuration Release --no-restore
+
+      - name: Test
+        if: steps.repo.outputs.has_projects == 'true'
+        run: dotnet test "${{ steps.repo.outputs.solution }}" --configuration Release --no-build --no-restore
+
+      - name: Pack
+        if: steps.repo.outputs.has_projects == 'true'
+        run: dotnet pack "${{ steps.repo.outputs.solution }}" --configuration Release --no-build --no-restore --output artifacts/packages
+
+      - name: Detect packages
+        if: steps.repo.outputs.has_projects == 'true'
+        id: packages
+        shell: bash
+        run: |
+          if find artifacts/packages -maxdepth 1 -type f \( -name '*.nupkg' -o -name '*.snupkg' \) -print -quit 2>/dev/null | grep -q .; then
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload package artifacts
+        if: steps.packages.outputs.created == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: artifacts/packages/*
+          if-no-files-found: error
+
+      - name: Template repository notice
+        if: steps.repo.outputs.has_projects != 'true'
+        run: echo "No production projects exist yet; package validation is skipped for the template itself."
+
+# Publication is intentionally not part of this workflow.
+# Release/publish automation should be added by repository type once package feed,
+# signing, versioning, and release-trigger policies are defined.
