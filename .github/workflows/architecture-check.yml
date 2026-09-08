@@ -1,0 +1,110 @@
+name: Architecture Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    name: Repository structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required root files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            "Directory.Build.props"
+            "Directory.Build.targets"
+            "Directory.Packages.props"
+            "global.json"
+            ".editorconfig"
+            "AGENTS.md"
+            ".github/copilot-instructions.md"
+          )
+
+          for file in "${required[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "Missing required file: $file"
+              exit 1
+            fi
+          done
+
+      - name: Validate solution placement
+        shell: bash
+        run: |
+          set -euo pipefail
+          root_solutions=$(find . -maxdepth 1 -type f -name '*.sln' | wc -l | tr -d ' ')
+          if [ "$root_solutions" -ne 1 ]; then
+            echo "Expected exactly one solution in the repository root; found $root_solutions."
+            exit 1
+          fi
+
+          nested=$(find src test -type f -name '*.sln' -print 2>/dev/null || true)
+          if [ -n "$nested" ]; then
+            echo "Solution files must exist only in the repository root:"
+            echo "$nested"
+            exit 1
+          fi
+
+      - name: Validate project placement
+        shell: bash
+        run: |
+          set -euo pipefail
+          misplaced=$(find . -type f -name '*.csproj' \
+            -not -path './src/*' \
+            -not -path './test/*' \
+            -not -path './.git/*' -print)
+
+          if [ -n "$misplaced" ]; then
+            echo "Projects must be under src/ or test/:"
+            echo "$misplaced"
+            exit 1
+          fi
+
+      - name: Validate central package versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          versioned=$(grep -RInE --include='*.csproj' '<PackageReference[^>]+Version=' src test 2>/dev/null || true)
+          if [ -n "$versioned" ]; then
+            echo "PackageReference versions belong in Directory.Packages.props:"
+            echo "$versioned"
+            exit 1
+          fi
+
+      - name: Validate test project classification
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r project; do
+            [ -z "$project" ] && continue
+            if ! grep -q '<IsTestProject>true</IsTestProject>' "$project"; then
+              echo "Test project must set IsTestProject=true: $project"
+              exit 1
+            fi
+          done < <(find test -type f -name '*.csproj' -print 2>/dev/null || true)
+
+      - name: Validate formatting whitespace
+        run: git diff --check HEAD^
+        continue-on-error: true
+
+  ai-architecture-review:
+    name: AI architecture review hook
+    runs-on: ubuntu-latest
+    if: ${{ false }}
+    steps:
+      - run: echo "Reserved for the future advisory Azure-hosted InfrastructureIntent architecture reviewer."
+
+# The AI review remains intentionally disabled until its model, prompt contract,
+# permissions, data boundary, and false-positive policy are defined.
