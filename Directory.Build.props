@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <!-- Repository-wide .NET defaults. Project files should override only when the project genuinely differs. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Production projects generate XML docs by default. Directory.Build.targets disables this for test projects. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <InfrastructureIntentEnableXml2Doc>true</InfrastructureIntentEnableXml2Doc>
+
+    <!-- Common package defaults. Override in the project only when the value is project-specific. -->
+    <Authors>InfrastructureIntent</Authors>
+    <Company>InfrastructureIntent</Company>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/InfrastructureIntent/REPOSITORY_NAME</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+</Project>
