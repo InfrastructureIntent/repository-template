@@ -40,6 +40,27 @@ jobs:
             fi
           done
 
+      - name: Validate generated repository initialization
+        if: github.repository != 'InfrastructureIntent/repository-template'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -f "RepositoryName.sln" ]; then
+            echo "Rename RepositoryName.sln before substantive work begins."
+            exit 1
+          fi
+
+          if grep -q 'REPOSITORY_NAME' Directory.Build.props; then
+            echo "Replace REPOSITORY_NAME in Directory.Build.props."
+            exit 1
+          fi
+
+          if [ ! -f "LICENSE" ]; then
+            echo "Generated repositories must explicitly define LICENSE according to their ownership boundary."
+            exit 1
+          fi
+
       - name: Validate solution placement
         shell: bash
         run: |
@@ -94,10 +115,6 @@ jobs:
               exit 1
             fi
           done < <(find test -type f -name '*.csproj' -print 2>/dev/null || true)
-
-      - name: Validate formatting whitespace
-        run: git diff --check HEAD^
-        continue-on-error: true
 
   ai-architecture-review:
     name: AI architecture review hook
