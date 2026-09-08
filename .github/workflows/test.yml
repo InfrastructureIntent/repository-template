@@ -1,0 +1,59 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Release tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Discover solution and projects
+        id: repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          solution_count=$(find . -maxdepth 1 -type f -name '*.sln' | wc -l | tr -d ' ')
+          if [ "$solution_count" -ne 1 ]; then
+            echo "Expected exactly one root .sln file; found $solution_count."
+            exit 1
+          fi
+          solution=$(find . -maxdepth 1 -type f -name '*.sln' -print -quit)
+          echo "solution=$solution" >> "$GITHUB_OUTPUT"
+          if find test -type f -name '*.csproj' -print -quit 2>/dev/null | grep -q .; then
+            echo "has_tests=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_tests=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore
+        if: steps.repo.outputs.has_tests == 'true'
+        run: dotnet restore "${{ steps.repo.outputs.solution }}"
+
+      - name: Build
+        if: steps.repo.outputs.has_tests == 'true'
+        run: dotnet build "${{ steps.repo.outputs.solution }}" --configuration Release --no-restore
+
+      - name: Test
+        if: steps.repo.outputs.has_tests == 'true'
+        run: dotnet test "${{ steps.repo.outputs.solution }}" --configuration Release --no-build --no-restore
+
+      - name: Template repository notice
+        if: steps.repo.outputs.has_tests != 'true'
+        run: echo "No test projects exist yet; tests are intentionally skipped for the template itself."
