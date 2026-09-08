@@ -24,8 +24,10 @@ This repository defines the standard C# repository layout and engineering defaul
 └── .github/
     ├── copilot-instructions.md
     ├── pull_request_template.md
+    ├── ISSUE_TEMPLATE/
     └── workflows/
-        ├── ci.yml
+        ├── build.yml
+        ├── test.yml
         ├── package.yml
         └── architecture-check.yml
 ```
@@ -86,7 +88,8 @@ The baseline currently pins `Xml2Doc.MSBuild` 2.4.0. Test-framework and other de
 
 ## Workflows
 
-- `ci.yml` runs restore, Release build, and tests for pull requests and pushes to `main`.
+- `build.yml` restores and performs a Release build for pull requests and pushes to `main`.
+- `test.yml` builds and runs the repository test suite for pull requests and pushes to `main`.
 - `package.yml` proves package production on pull requests and `main` without publishing.
 - `architecture-check.yml` enforces repository structure and provides the disabled hook for the future advisory AI architecture reviewer.
 
@@ -108,7 +111,7 @@ When creating a new repository from this template:
 6. Add all projects to the root solution.
 7. Add package versions centrally in `Directory.Packages.props`.
 8. Keep project-specific values in each `.csproj`; keep shared policy in root build files.
-9. Ensure architecture checks and CI are green before substantive implementation proceeds.
+9. Ensure Build, Test, Package, and Architecture Check workflows are green before substantive implementation proceeds.
 
 For InfrastructureIntent-owned repositories, licensing must follow the canonical IP/licensing policy in `InfrastructureIntent/documentation`—in particular, the controlled Engine implementation and public extension ecosystem do not use the same license.
 
