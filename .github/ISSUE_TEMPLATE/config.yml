@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Architecture and standards
+    url: https://github.com/InfrastructureIntent/documentation
+    about: Review canonical InfrastructureIntent architecture and engineering standards before proposing cross-repository changes.
