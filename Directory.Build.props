@@ -17,13 +17,12 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <InfrastructureIntentEnableXml2Doc>true</InfrastructureIntentEnableXml2Doc>
 
-    <!-- Common package defaults. Override in the project only when the value is project-specific. -->
+    <!-- Common package defaults. Repository/package licensing is intentionally NOT defaulted by the template. -->
     <Authors>InfrastructureIntent</Authors>
     <Company>InfrastructureIntent</Company>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/InfrastructureIntent/REPOSITORY_NAME</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
