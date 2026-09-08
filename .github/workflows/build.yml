@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Release build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Discover solution and projects
+        id: repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          solution_count=$(find . -maxdepth 1 -type f -name '*.sln' | wc -l | tr -d ' ')
+          if [ "$solution_count" -ne 1 ]; then
+            echo "Expected exactly one root .sln file; found $solution_count."
+            exit 1
+          fi
+          solution=$(find . -maxdepth 1 -type f -name '*.sln' -print -quit)
+          echo "solution=$solution" >> "$GITHUB_OUTPUT"
+          if find src test -type f -name '*.csproj' -print -quit 2>/dev/null | grep -q .; then
+            echo "has_projects=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_projects=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore
+        if: steps.repo.outputs.has_projects == 'true'
+        run: dotnet restore "${{ steps.repo.outputs.solution }}"
+
+      - name: Build
+        if: steps.repo.outputs.has_projects == 'true'
+        run: dotnet build "${{ steps.repo.outputs.solution }}" --configuration Release --no-restore
+
+      - name: Template repository notice
+        if: steps.repo.outputs.has_projects != 'true'
+        run: echo "No projects exist yet; build is intentionally skipped for the template itself."
