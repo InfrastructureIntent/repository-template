@@ -179,7 +179,7 @@ jobs:
             fi
 
             if ! grep -q 'PackageReference Include="Microsoft.NET.Test.Sdk"' "$project"; then
-              echo "Test project must reference Microsoft.NET.Test.Sdk for the repository test baseline: $project"
+              echo "Test project must reference Microsoft.NET.Test.Sdk for the repository's VSTest/IDE compatibility baseline: $project"
               exit 1
             fi
 
