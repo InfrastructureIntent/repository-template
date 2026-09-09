@@ -29,6 +29,7 @@ During work:
 - do not put repository-wide build policy into individual `.csproj` files;
 - keep package versions in `Directory.Packages.props`;
 - keep production projects under `src/` and test projects under `test/`;
+- production projects that generate API documentation explicitly reference `Xml2Doc.MSBuild`; test projects do not;
 - update documentation when public behavior or contracts change;
 - update `CHANGELOG.md` as notable changes land;
 - keep `TODO.md` as an orientation aid only—GitHub Issues/Milestones remain authoritative;
@@ -39,6 +40,10 @@ Before completion:
 - run restore/build/test in Release configuration;
 - run repository architecture checks;
 - verify generated documentation is current when public APIs changed;
+- review all PR feedback and distinguish actionable findings from informational observations;
+- action valid review findings before merge;
+- when a review finding is intentionally not actioned, record a concise technical rationale rather than silently dismissing it;
+- resolve review threads only after the finding has been actioned or explicitly dispositioned;
 - record validation evidence, decisions, blockers, and next work in the iteration log;
 - ensure the PR links the governing milestone-assigned issue;
 - ensure release documentation reflects the change when it affects the active release scope.
@@ -73,6 +78,8 @@ Cross-repository weekly summaries are generated from these local logs and GitHub
 
 ## Commit and PR discipline
 
-Commits should be small enough to explain and review. PR descriptions should state the problem, architectural impact, implementation, and validation evidence.
+Commits should be small enough to explain and review. PR descriptions should state the problem, governing milestone/issue, architectural impact, implementation, validation evidence, and compatibility impact.
 
 Do not claim architecture compliance solely because code compiles. Changes must conform to the documented ownership and dependency boundaries as well as tests.
+
+Do not invent architecture, contracts, abstractions, or extensibility points that are not required by the active issue. When a new public contract appears necessary, pressure-test the requirement against the Engine/consumer need before expanding the public surface.
