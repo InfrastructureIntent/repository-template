@@ -83,7 +83,7 @@ Typical test project:
 </Project>
 ```
 
-`global.json` selects `Microsoft.Testing.Platform`, and `xunit.v3` provides the xUnit v3 integration used by that runner. The template also includes `Microsoft.NET.Test.Sdk` and `xunit.runner.visualstudio` as part of its standard VSTest/IDE compatibility baseline; they should not be interpreted as requirements imposed by Microsoft.Testing.Platform itself. A repository may deliberately standardize on a different MTP-compatible test framework or a narrower runner/tooling surface, but that is an explicit repository-level deviation from this template baseline. A newly initialized test project should include at least one real smoke test so CI proves test discovery/execution and does not fail with a zero-tests result.
+`global.json` selects `Microsoft.Testing.Platform`, and `xunit.v3` is the Microsoft.Testing.Platform-compatible xUnit v3 test framework used by that runner. The template also includes `Microsoft.NET.Test.Sdk` and `xunit.runner.visualstudio` as part of its standard VSTest/IDE compatibility baseline; they should not be interpreted as requirements imposed by Microsoft.Testing.Platform itself. A repository may deliberately standardize on a different MTP-compatible test framework or a narrower runner/tooling surface, but that is an explicit repository-level deviation from this template baseline. A newly initialized test project should include at least one real smoke test so CI proves test discovery/execution and does not fail with a zero-tests result.
 
 ## Build defaults
 
