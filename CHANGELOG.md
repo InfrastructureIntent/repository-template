@@ -9,8 +9,11 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 ### Added
 
 - Initial repository baseline.
+- Architecture validation for root-solution membership, production Xml2Doc opt-in, test-project Xml2Doc exclusion, and required release-governance files.
 
 ### Changed
+
+- Architecture Check now provisions the SDK from `global.json` so solution membership validation uses the repository's declared .NET baseline.
 
 ### Deprecated
 
