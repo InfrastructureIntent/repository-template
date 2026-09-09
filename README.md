@@ -58,6 +58,14 @@ Typical production project:
 </Project>
 ```
 
+A production project that intentionally does not generate Xml2Doc API documentation must make that decision explicit in the project file:
+
+```xml
+<PropertyGroup>
+  <Xml2Doc_Enabled>false</Xml2Doc_Enabled>
+</PropertyGroup>
+```
+
 Typical test project:
 
 ```xml
@@ -87,7 +95,7 @@ Typical test project:
 
 `Directory.Build.targets` handles rules that require the fully evaluated project. Test projects automatically opt out of public XML/Xml2Doc documentation and suppress `CS1591`.
 
-Xml2Doc uses an explicit production-project opt-in model. Each production `.csproj` that generates API documentation must reference `Xml2Doc.MSBuild` with `PrivateAssets="all"`. Test projects must not reference `Xml2Doc.MSBuild`. The version is owned centrally by `Directory.Packages.props`, while the shared Xml2Doc behavior is owned by `Directory.Build.props`.
+Xml2Doc uses an explicit production-project intent model. Each production `.csproj` must either reference `Xml2Doc.MSBuild` with `PrivateAssets="all"` to generate API documentation, or explicitly set `<Xml2Doc_Enabled>false</Xml2Doc_Enabled>` when that project intentionally does not generate Xml2Doc output. Test projects must not reference `Xml2Doc.MSBuild`. The version is owned centrally by `Directory.Packages.props`, while the shared Xml2Doc behavior is owned by `Directory.Build.props`.
 
 ## Package versions
 
@@ -131,7 +139,7 @@ When creating a new repository from this template:
 3. Choose the repository's license **before substantive code is committed**. Do not inherit a license merely because the repository came from this template.
 4. Establish the first release milestone and create issues for planned implementation work before coding begins.
 5. Initialize `TODO.md` and `RELEASE_NOTES.md` for the active milestone; keep `CHANGELOG.md` current as changes land.
-6. Add production projects under `src/` and add an explicit `Xml2Doc.MSBuild` reference to each production project that should generate API documentation.
+6. Add production projects under `src/`; each production project must either explicitly reference `Xml2Doc.MSBuild` for API documentation or explicitly set `Xml2Doc_Enabled=false`.
 7. Add test projects under `test/`; test projects do not reference Xml2Doc.
 8. Add all projects to the root solution.
 9. Add package versions centrally in `Directory.Packages.props`.
