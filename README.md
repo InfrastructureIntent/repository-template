@@ -83,7 +83,7 @@ Typical test project:
 </Project>
 ```
 
-Because `global.json` selects `Microsoft.Testing.Platform`, generated repositories should use the centrally managed xUnit v3/MTP-compatible test baseline above unless a repository deliberately standardizes on another Microsoft.Testing.Platform-compatible framework. A newly initialized test project should include at least one real smoke test so CI proves test discovery/execution and does not fail with a zero-tests result.
+`global.json` selects `Microsoft.Testing.Platform`, and `xunit.v3` provides the xUnit v3 integration used by that runner. The template also includes `Microsoft.NET.Test.Sdk` and `xunit.runner.visualstudio` as part of its standard VSTest/IDE compatibility baseline; they should not be interpreted as requirements imposed by Microsoft.Testing.Platform itself. A repository may deliberately standardize on a different MTP-compatible test framework or a narrower runner/tooling surface, but that is an explicit repository-level deviation from this template baseline. A newly initialized test project should include at least one real smoke test so CI proves test discovery/execution and does not fail with a zero-tests result.
 
 ## Build defaults
 
@@ -132,6 +132,8 @@ GitHub Issues and Milestones are the authoritative planning system for planned i
 
 At release closeout, update the changelog and release notes to reflect what actually shipped, record validation/publication evidence, and keep existing release tags immutable.
 
+The source template is a special case because `CHANGELOG.md`, `TODO.md`, and `RELEASE_NOTES.md` are seed files copied into generated repositories. They remain clean generated-repository starting state. The repository-template's own version history is recorded in its GitHub Releases instead of being written into those seed files.
+
 ## Repository-local agent state
 
 Each repository keeps its own `AGENTS.md` and `docs/iterations/YYYY/YYYY-MM-DD.md` execution history. Cross-repository architecture and standards remain canonical in `InfrastructureIntent/documentation`.
@@ -146,7 +148,7 @@ When creating a new repository from this template:
 4. Establish the first release milestone and create issues for planned implementation work before coding begins.
 5. Initialize `TODO.md` and `RELEASE_NOTES.md` for the active milestone; keep `CHANGELOG.md` current as changes land.
 6. Add production projects under `src/`; each production project must either explicitly reference `Xml2Doc.MSBuild` for API documentation or explicitly set `Xml2Doc_Enabled=false`.
-7. Add test projects under `test/`; use the approved Microsoft.Testing.Platform-compatible test framework baseline, do not reference Xml2Doc, and include at least one real test so the test pipeline proves discovery/execution.
+7. Add test projects under `test/`; use the approved Microsoft.Testing.Platform-compatible framework plus the repository's intended VSTest/IDE compatibility tooling, do not reference Xml2Doc, and include at least one real test so the test pipeline proves discovery/execution.
 8. Add all projects to the root solution.
 9. Add package versions centrally in `Directory.Packages.props`.
 10. Keep project-specific values in each `.csproj`; keep shared policy in root build files.
