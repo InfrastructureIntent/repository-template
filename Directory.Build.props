@@ -15,7 +15,20 @@
 
     <!-- Production projects generate XML docs by default. Directory.Build.targets disables this for test projects. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <InfrastructureIntentEnableXml2Doc>true</InfrastructureIntentEnableXml2Doc>
+
+    <!-- Shared Xml2Doc policy. Production projects opt in with an explicit Xml2Doc.MSBuild PackageReference. -->
+    <Xml2Doc_Enabled>true</Xml2Doc_Enabled>
+    <Xml2Doc_SingleFile>false</Xml2Doc_SingleFile>
+    <Xml2Doc_OutputDir>$(MSBuildProjectDirectory)/docs</Xml2Doc_OutputDir>
+    <Xml2Doc_FileNameMode>clean</Xml2Doc_FileNameMode>
+    <Xml2Doc_RootNamespaceToTrim>$(RootNamespace)</Xml2Doc_RootNamespaceToTrim>
+    <Xml2Doc_TrimRootNamespaceInFileNames>true</Xml2Doc_TrimRootNamespaceInFileNames>
+    <Xml2Doc_CodeBlockLanguage>csharp</Xml2Doc_CodeBlockLanguage>
+    <Xml2Doc_PruneStaleFiles>true</Xml2Doc_PruneStaleFiles>
+    <Xml2Doc_ManifestIdentity>$(MSBuildProjectName)</Xml2Doc_ManifestIdentity>
+    <Xml2Doc_GenerateIndex>false</Xml2Doc_GenerateIndex>
+    <Xml2Doc_ReportPath>$(Xml2Doc_OutputDir)/xml2doc-report-$(MSBuildProjectName).json</Xml2Doc_ReportPath>
+    <Xml2Doc_LineEndings>lf</Xml2Doc_LineEndings>
 
     <!-- Common package defaults. Repository/package licensing is intentionally NOT defaulted by the template. -->
     <Authors>InfrastructureIntent</Authors>
