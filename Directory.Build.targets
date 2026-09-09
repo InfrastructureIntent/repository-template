@@ -2,13 +2,7 @@
   <!-- Directory.Build.targets is imported after the project file, so IsTestProject is available here. -->
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <InfrastructureIntentEnableXml2Doc>false</InfrastructureIntentEnableXml2Doc>
+    <Xml2Doc_Enabled>false</Xml2Doc_Enabled>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(InfrastructureIntentEnableXml2Doc)' == 'true'">
-    <PackageReference Include="Xml2Doc.MSBuild" PrivateAssets="all">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>
