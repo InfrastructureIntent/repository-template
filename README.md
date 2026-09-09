@@ -75,9 +75,15 @@ Typical test project:
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <!-- Add the repository's approved test framework dependencies here. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+  </ItemGroup>
 </Project>
 ```
+
+Because `global.json` selects `Microsoft.Testing.Platform`, generated repositories should use the centrally managed xUnit v3/MTP-compatible test baseline above unless a repository deliberately standardizes on another Microsoft.Testing.Platform-compatible framework. A newly initialized test project should include at least one real smoke test so CI proves test discovery/execution and does not fail with a zero-tests result.
 
 ## Build defaults
 
@@ -101,7 +107,7 @@ Xml2Doc uses an explicit production-project intent model. Each production `.cspr
 
 Use Central Package Management through `Directory.Packages.props`. Individual project files declare package dependencies without versions.
 
-The baseline currently pins `Xml2Doc.MSBuild` 2.4.0. Test-framework and other dependency versions should be added centrally when the repository introduces those dependencies.
+The baseline currently pins `Microsoft.NET.Test.Sdk` 18.9.0, `xunit.v3` 4.0.0, `xunit.runner.visualstudio` 4.0.0, and `Xml2Doc.MSBuild` 2.4.0. Add other dependency versions centrally when the repository introduces those dependencies.
 
 ## Workflows
 
@@ -140,7 +146,7 @@ When creating a new repository from this template:
 4. Establish the first release milestone and create issues for planned implementation work before coding begins.
 5. Initialize `TODO.md` and `RELEASE_NOTES.md` for the active milestone; keep `CHANGELOG.md` current as changes land.
 6. Add production projects under `src/`; each production project must either explicitly reference `Xml2Doc.MSBuild` for API documentation or explicitly set `Xml2Doc_Enabled=false`.
-7. Add test projects under `test/`; test projects do not reference Xml2Doc.
+7. Add test projects under `test/`; use the approved Microsoft.Testing.Platform-compatible test framework baseline, do not reference Xml2Doc, and include at least one real test so the test pipeline proves discovery/execution.
 8. Add all projects to the root solution.
 9. Add package versions centrally in `Directory.Packages.props`.
 10. Keep project-specific values in each `.csproj`; keep shared policy in root build files.
