@@ -132,14 +132,31 @@ jobs:
             exit 1
           fi
 
-      - name: Validate production Xml2Doc opt-in
+      - name: Validate production Xml2Doc intent
         shell: bash
         run: |
           set -euo pipefail
           while IFS= read -r project; do
             [ -z "$project" ] && continue
-            if ! grep -q 'PackageReference Include="Xml2Doc.MSBuild"' "$project"; then
-              echo "Production project must explicitly reference Xml2Doc.MSBuild: $project"
+
+            has_reference=false
+            has_opt_out=false
+
+            if grep -q 'PackageReference Include="Xml2Doc.MSBuild"' "$project"; then
+              has_reference=true
+            fi
+
+            if grep -q '<Xml2Doc_Enabled>false</Xml2Doc_Enabled>' "$project"; then
+              has_opt_out=true
+            fi
+
+            if [ "$has_reference" = true ] && [ "$has_opt_out" = true ]; then
+              echo "Production project must not both reference Xml2Doc.MSBuild and explicitly disable Xml2Doc: $project"
+              exit 1
+            fi
+
+            if [ "$has_reference" = false ] && [ "$has_opt_out" = false ]; then
+              echo "Production project must either reference Xml2Doc.MSBuild or explicitly set Xml2Doc_Enabled=false: $project"
               exit 1
             fi
           done < <(find src -type f -name '*.csproj' -print 2>/dev/null | sort)
