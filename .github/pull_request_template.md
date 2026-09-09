@@ -2,6 +2,10 @@
 
 Describe the problem and the bounded change made.
 
+## Governing milestone
+
+Milestone: `...`
+
 ## Governing issue
 
 Closes #
@@ -10,6 +14,8 @@ Closes #
 
 Describe affected InfrastructureIntent ownership boundaries/contracts. State `None` when the change is implementation-only.
 
+If implementation pressure changes an accepted architecture decision, link the corresponding documentation/ADR update rather than silently diverging.
+
 ## Validation
 
 - [ ] Restore succeeds
@@ -17,7 +23,10 @@ Describe affected InfrastructureIntent ownership boundaries/contracts. State `No
 - [ ] Tests pass
 - [ ] Architecture checks pass
 - [ ] Public API documentation is current when applicable
+- [ ] `CHANGELOG.md` updated when the change is notable
+- [ ] `RELEASE_NOTES.md` updated when the active release narrative changes
 - [ ] Iteration log updated
+- [ ] Actionable review comments are resolved or explicitly dispositioned
 
 ## Compatibility
 

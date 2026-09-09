@@ -3,6 +3,11 @@ description: Define a bounded InfrastructureIntent implementation or engineering
 title: ""
 labels: []
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Planned implementation work must be assigned to an established milestone before coding begins. Milestones represent coherent release scope rather than schedules and do not require due dates.
+
   - type: textarea
     id: objective
     attributes:
@@ -11,11 +16,20 @@ body:
     validations:
       required: true
 
+  - type: input
+    id: milestone
+    attributes:
+      label: Governing milestone
+      description: Name the release/scope milestone this issue belongs to. Assign the GitHub milestone after creating the issue.
+      placeholder: 0.1.0 - Initial ...
+    validations:
+      required: true
+
   - type: textarea
     id: context
     attributes:
       label: Context
-      description: Relevant architecture, milestone, dependency, or background.
+      description: Relevant architecture, dependency, prior decision, or background.
 
   - type: textarea
     id: acceptance
@@ -32,10 +46,20 @@ body:
     id: architecture
     attributes:
       label: Architecture impact
-      description: Identify affected contracts/boundaries or state None.
+      description: Identify affected contracts/boundaries or state None. If accepted architecture must change, identify the ADR/documentation update required.
 
   - type: textarea
     id: validation
     attributes:
       label: Validation expectations
-      description: Tests, conformance checks, generated docs, packaging, or other required evidence.
+      description: Tests, conformance checks, generated docs, packaging, release documentation, or other required evidence.
+
+  - type: checkboxes
+    id: planning
+    attributes:
+      label: Planning discipline
+      options:
+        - label: I will assign this issue to the governing milestone before implementation begins.
+          required: true
+        - label: I understand that TODO.md does not authorize implementation; GitHub Issues and Milestones are authoritative.
+          required: true
