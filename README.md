@@ -48,6 +48,10 @@ Typical production project:
     <PackageId>InfrastructureIntent.Example</PackageId>
     <Description>Project-specific description.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xml2Doc.MSBuild" PrivateAssets="all" />
+  </ItemGroup>
 </Project>
 ```
 
@@ -75,10 +79,12 @@ Typical test project:
 - current recommended .NET analyzers;
 - warnings as errors;
 - XML documentation generation for production projects;
-- Xml2Doc Markdown API generation for production projects;
+- shared Xml2Doc Markdown API-generation defaults for production projects;
 - common package metadata that is safe across repository types.
 
-`Directory.Build.targets` handles rules that require the fully evaluated project. In particular, test projects automatically opt out of public XML/Xml2Doc documentation while production projects receive `Xml2Doc.MSBuild` as private build tooling.
+`Directory.Build.targets` handles rules that require the fully evaluated project. Test projects automatically opt out of public XML/Xml2Doc documentation and suppress `CS1591`.
+
+Xml2Doc uses an explicit production-project opt-in model. Each production `.csproj` that generates API documentation must reference `Xml2Doc.MSBuild` with `PrivateAssets="all"`. Test projects must not reference `Xml2Doc.MSBuild`. The version is owned centrally by `Directory.Packages.props`, while the shared Xml2Doc behavior is owned by `Directory.Build.props`.
 
 ## Package versions
 
@@ -106,8 +112,8 @@ When creating a new repository from this template:
 1. Rename `RepositoryName.sln` to the repository/product solution name.
 2. Replace `REPOSITORY_NAME` in root build metadata.
 3. Choose the repository's license **before substantive code is committed**. Do not inherit a license merely because the repository came from this template.
-4. Add production projects under `src/`.
-5. Add test projects under `test/`.
+4. Add production projects under `src/` and add an explicit `Xml2Doc.MSBuild` reference to each production project that should generate API documentation.
+5. Add test projects under `test/`; test projects do not reference Xml2Doc.
 6. Add all projects to the root solution.
 7. Add package versions centrally in `Directory.Packages.props`.
 8. Keep project-specific values in each `.csproj`; keep shared policy in root build files.
