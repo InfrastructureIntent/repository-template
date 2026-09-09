@@ -1,8 +1,8 @@
 # Changelog
 
-All notable changes to repositories generated from this template should be documented in this file.
+All notable changes to this repository should be documented in this file.
 
-The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), and generated repositories should use Semantic Versioning where versioned artifacts are produced.
+The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/), and this repository should use Semantic Versioning where versioned artifacts are produced.
 
 ## [Unreleased]
 
