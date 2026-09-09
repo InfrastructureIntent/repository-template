@@ -14,8 +14,10 @@ Before substantive work:
 
 1. Read this repository's `README.md`.
 2. Read applicable canonical architecture/standards from `InfrastructureIntent/documentation`.
-3. Review the current GitHub issue/milestone driving the work.
-4. Create or update today's repository-local iteration log under `docs/iterations/YYYY/YYYY-MM-DD.md`.
+3. Review the current GitHub milestone and governing issue.
+4. Confirm the planned implementation issue is assigned to an established milestone before coding begins.
+5. Review `CHANGELOG.md`, `TODO.md`, and `RELEASE_NOTES.md` for the active release context.
+6. Create or update today's repository-local iteration log under `docs/iterations/YYYY/YYYY-MM-DD.md`.
 
 During work:
 
@@ -27,7 +29,10 @@ During work:
 - do not put repository-wide build policy into individual `.csproj` files;
 - keep package versions in `Directory.Packages.props`;
 - keep production projects under `src/` and test projects under `test/`;
-- update documentation when public behavior or contracts change.
+- update documentation when public behavior or contracts change;
+- update `CHANGELOG.md` as notable changes land;
+- keep `TODO.md` as an orientation aid only—GitHub Issues/Milestones remain authoritative;
+- keep `RELEASE_NOTES.md` aligned with the active milestone and actual release state.
 
 Before completion:
 
@@ -35,7 +40,22 @@ Before completion:
 - run repository architecture checks;
 - verify generated documentation is current when public APIs changed;
 - record validation evidence, decisions, blockers, and next work in the iteration log;
-- ensure the PR links the governing issue.
+- ensure the PR links the governing milestone-assigned issue;
+- ensure release documentation reflects the change when it affects the active release scope.
+
+## Milestones and release management
+
+Milestones represent coherent release scope rather than schedules; due dates are optional.
+
+Planned implementation must not begin without an issue assigned to an established milestone. `TODO.md` does not authorize implementation by itself.
+
+Use the release files as follows:
+
+- `CHANGELOG.md` — curated notable changes, following Keep a Changelog 1.1.0 with `[Unreleased]` retained at the top;
+- `TODO.md` — lightweight repository-facing candidate/current-work orientation only;
+- `RELEASE_NOTES.md` — evolving human-readable release narrative for the active milestone.
+
+At release closeout, update release documentation to reflect what actually shipped, record validation/publication evidence, and do not move or recreate an existing release tag.
 
 ## Iteration logs
 
