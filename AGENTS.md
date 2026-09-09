@@ -33,7 +33,8 @@ During work:
 - update documentation when public behavior or contracts change;
 - update `CHANGELOG.md` as notable changes land;
 - keep `TODO.md` as an orientation aid only—GitHub Issues/Milestones remain authoritative;
-- keep `RELEASE_NOTES.md` aligned with the active milestone and actual release state.
+- keep `RELEASE_NOTES.md` aligned with the active milestone and actual release state;
+- update today's iteration log as meaningful decisions, implementation results, validation outcomes, review findings, merges/releases, blockers, or architecture implications occur; do not defer the full record until repository closeout.
 
 Before completion:
 
@@ -45,6 +46,7 @@ Before completion:
 - when a review finding is intentionally not actioned, record a concise technical rationale rather than silently dismissing it;
 - resolve review threads only after the finding has been actioned or explicitly dispositioned;
 - record validation evidence, decisions, blockers, and next work in the iteration log;
+- verify today's `docs/iterations/YYYY/YYYY-MM-DD.md` records the material work, decisions, validation, review disposition, merges/releases, blockers, and remaining state from the current session before declaring repository work complete;
 - ensure the PR links the governing milestone-assigned issue;
 - ensure release documentation reflects the change when it affects the active release scope.
 
@@ -64,7 +66,9 @@ At release closeout, update release documentation to reflect what actually shipp
 
 ## Iteration logs
 
-Iteration logs are execution records, not canonical architecture documents. Record:
+Iteration logs are execution records, not canonical architecture documents. Maintain exactly one log per repository per calendar day. Never append today's work to a previous day's log.
+
+Record:
 
 - work attempted/completed;
 - decisions made or questions raised;
@@ -74,7 +78,7 @@ Iteration logs are execution records, not canonical architecture documents. Reco
 - architecture implications;
 - next work.
 
-Cross-repository weekly summaries are generated from these local logs and GitHub activity.
+When work moves between repositories, each repository maintains its own daily log for the material work performed there. Cross-repository weekly summaries are generated from these local logs and GitHub activity.
 
 ## Commit and PR discipline
 
