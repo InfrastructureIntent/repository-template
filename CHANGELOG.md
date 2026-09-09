@@ -9,11 +9,13 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 ### Added
 
 - Initial repository baseline.
-- Architecture validation for root-solution membership, production Xml2Doc opt-in, test-project Xml2Doc exclusion, and required release-governance files.
+- Architecture validation for root-solution membership, production Xml2Doc opt-in, test-project Xml2Doc exclusion, required release-governance files, and the standard Microsoft.Testing.Platform-compatible xUnit v3 test-project baseline.
+- Centrally managed `Microsoft.NET.Test.Sdk`, `xunit.v3`, and `xunit.runner.visualstudio` versions proven by public/private repository pressure tests.
 
 ### Changed
 
 - Architecture Check now provisions the SDK from `global.json` so solution membership validation uses the repository's declared .NET baseline.
+- Test-project guidance now requires an MTP-compatible framework baseline and at least one real test when a new test project is initialized, preventing zero-test CI failures.
 
 ### Deprecated
 
