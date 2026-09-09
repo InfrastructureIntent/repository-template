@@ -179,12 +179,12 @@ jobs:
             fi
 
             if ! grep -q 'PackageReference Include="Microsoft.NET.Test.Sdk"' "$project"; then
-              echo "Test project must reference Microsoft.NET.Test.Sdk for the repository test baseline: $project"
+              echo "Test project must reference Microsoft.NET.Test.Sdk for the repository's VSTest/IDE compatibility baseline: $project"
               exit 1
             fi
 
             if ! grep -q 'PackageReference Include="xunit.v3"' "$project"; then
-              echo "Test project must reference xunit.v3 for the repository Microsoft.Testing.Platform baseline: $project"
+              echo "Test project must reference xunit.v3 for the repository's Microsoft.Testing.Platform-compatible framework baseline: $project"
               exit 1
             fi
           done < <(find test -type f -name '*.csproj' -print 2>/dev/null | sort)
