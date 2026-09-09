@@ -19,6 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
       - name: Validate required root files
         shell: bash
         run: |
@@ -30,6 +35,11 @@ jobs:
             "global.json"
             ".editorconfig"
             "AGENTS.md"
+            "README.md"
+            "CONTRIBUTING.md"
+            "CHANGELOG.md"
+            "TODO.md"
+            "RELEASE_NOTES.md"
             ".github/copilot-instructions.md"
           )
 
@@ -93,6 +103,24 @@ jobs:
             exit 1
           fi
 
+      - name: Validate root solution membership
+        shell: bash
+        run: |
+          set -euo pipefail
+          solution=$(find . -maxdepth 1 -type f -name '*.sln' -print -quit)
+          solution_projects=$(dotnet sln "$solution" list)
+
+          while IFS= read -r project; do
+            [ -z "$project" ] && continue
+            relative="${project#./}"
+            windows_relative="${relative//\//\\}"
+
+            if ! grep -Fqx "$relative" <<< "$solution_projects" && ! grep -Fqx "$windows_relative" <<< "$solution_projects"; then
+              echo "Project is not included in the root solution: $relative"
+              exit 1
+            fi
+          done < <(find src test -type f -name '*.csproj' -print 2>/dev/null | sort)
+
       - name: Validate central package versions
         shell: bash
         run: |
@@ -104,17 +132,52 @@ jobs:
             exit 1
           fi
 
-      - name: Validate test project classification
+      - name: Validate production Xml2Doc intent
         shell: bash
         run: |
           set -euo pipefail
           while IFS= read -r project; do
             [ -z "$project" ] && continue
+
+            has_reference=false
+            has_opt_out=false
+
+            if grep -q 'PackageReference Include="Xml2Doc.MSBuild"' "$project"; then
+              has_reference=true
+            fi
+
+            if grep -q '<Xml2Doc_Enabled>false</Xml2Doc_Enabled>' "$project"; then
+              has_opt_out=true
+            fi
+
+            if [ "$has_reference" = true ] && [ "$has_opt_out" = true ]; then
+              echo "Production project must not both reference Xml2Doc.MSBuild and explicitly disable Xml2Doc: $project"
+              exit 1
+            fi
+
+            if [ "$has_reference" = false ] && [ "$has_opt_out" = false ]; then
+              echo "Production project must either reference Xml2Doc.MSBuild or explicitly set Xml2Doc_Enabled=false: $project"
+              exit 1
+            fi
+          done < <(find src -type f -name '*.csproj' -print 2>/dev/null | sort)
+
+      - name: Validate test project classification and Xml2Doc exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r project; do
+            [ -z "$project" ] && continue
+
             if ! grep -q '<IsTestProject>true</IsTestProject>' "$project"; then
               echo "Test project must set IsTestProject=true: $project"
               exit 1
             fi
-          done < <(find test -type f -name '*.csproj' -print 2>/dev/null || true)
+
+            if grep -q 'PackageReference Include="Xml2Doc.MSBuild"' "$project"; then
+              echo "Test projects must not reference Xml2Doc.MSBuild: $project"
+              exit 1
+            fi
+          done < <(find test -type f -name '*.csproj' -print 2>/dev/null | sort)
 
   ai-architecture-review:
     name: AI architecture review hook
